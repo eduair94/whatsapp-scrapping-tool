@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CheckSession } from '../types';
+import { categorizeResults } from '../utils/resultUtils';
 import { SessionDetailsModal } from './SessionDetailsModal';
 
 interface HistoryModalProps {
@@ -10,6 +11,8 @@ interface HistoryModalProps {
   onPauseSession?: (session: CheckSession) => void;
   onDeleteSession?: (sessionId: string) => void;
   onClearHistory?: () => void;
+  onToggleStar?: (session: CheckSession) => void;
+  onExportSession?: (session: CheckSession) => void;
 }
 
 export const HistoryModal: React.FC<HistoryModalProps> = ({
@@ -20,6 +23,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
   onPauseSession,
   onDeleteSession,
   onClearHistory,
+  onToggleStar,
+  onExportSession,
 }) => {
   const [selectedSession, setSelectedSession] = useState<CheckSession | null>(
     null
@@ -126,9 +131,19 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
                           onClick={() => handleSessionClick(session)}
                           className="flex-1 text-left"
                         >
-                          <h4 className="text-sm font-medium text-gray-900">
-                            {session.fileName}
-                          </h4>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm font-medium text-gray-900">
+                              {session.fileName}
+                            </h4>
+                            {session.isStarred && (
+                              <svg
+                                className="w-4 h-4 text-yellow-500 fill-current"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                              </svg>
+                            )}
+                          </div>
                         </button>
                         <div className="flex items-center gap-2">
                           <span
@@ -185,15 +200,21 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
                             </div>
                           </div>
                           <div>
-                            <span className="text-gray-500">Successful:</span>
+                            <span className="text-gray-500">Active:</span>
                             <div className="font-medium text-green-600">
-                              {session.successfulChecks.toLocaleString()}
+                              {categorizeResults(
+                                session.results
+                              ).activeResults.length.toLocaleString()}
                             </div>
                           </div>
                           <div>
-                            <span className="text-gray-500">Failed:</span>
-                            <div className="font-medium text-red-600">
-                              {session.failedChecks.toLocaleString()}
+                            <span className="text-gray-500">
+                              Not on WhatsApp:
+                            </span>
+                            <div className="font-medium text-gray-600">
+                              {categorizeResults(
+                                session.results
+                              ).notOnWhatsAppResults.length.toLocaleString()}
                             </div>
                           </div>
                           <div>
@@ -202,6 +223,13 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
                               {new Date(session.startTime).toLocaleDateString()}
                             </div>
                           </div>
+                        </div>
+
+                        <div className="mt-2 text-xs text-gray-500">
+                          API Errors:{' '}
+                          {categorizeResults(
+                            session.results
+                          ).apiErrorResults.length.toLocaleString()}
                         </div>
 
                         {session.endTime && (
@@ -234,7 +262,10 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
         }}
         onResume={handleResumeSession}
         onPause={handlePauseSession}
+        onToggleStar={onToggleStar}
+        onExport={onExportSession}
         canResume={
+          selectedSession?.status === 'pending' ||
           selectedSession?.status === 'running' ||
           selectedSession?.status === 'cancelled'
         }

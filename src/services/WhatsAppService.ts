@@ -127,6 +127,7 @@ export class WhatsAppService {
         onRateLimit: (rateLimitInfo) => {
           rateLimited++;
           if (options.onRateLimit) {
+            console.log('Ratelimit info', rateLimitInfo);
             options.onRateLimit(rateLimitInfo);
           }
         },

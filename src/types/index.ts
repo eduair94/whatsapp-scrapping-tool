@@ -19,6 +19,12 @@ export interface WhatsAppResult {
   error?: string;
   rateLimitInfo?: RateLimitInfo;
   checkedAt?: Date;
+  status?:
+    | 'active'
+    | 'not_on_whatsapp'
+    | 'api_error'
+    | 'pending'
+    | 'rate_limited';
 }
 
 export interface RateLimitInfo {
@@ -58,7 +64,7 @@ export interface BulkCheckProgress {
   rateLimited?: number;
   estimatedTimeRemaining?: number;
   rateLimitInfo?: RateLimitInfo;
-  currentResult?: any;
+  currentResult?: WhatsAppResult;
 }
 
 export interface BulkCheckOptions {
@@ -92,9 +98,16 @@ export interface CheckSession {
   completedNumbers: number;
   successfulChecks: number;
   failedChecks: number;
+  notOnWhatsAppChecks: number;
+  apiErrorChecks: number;
+  rateLimitedChecks: number;
   results: WhatsAppResult[];
+  originalNumbers?: PhoneNumberData[]; // For pending sessions to enable resume
   settings: AppSettings;
   status: 'pending' | 'running' | 'completed' | 'cancelled' | 'error';
+  isStarred?: boolean;
+  lastResumedAt?: Date;
+  pausedAt?: Date;
 }
 
 export interface ExportOptions {

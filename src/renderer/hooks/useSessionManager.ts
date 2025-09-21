@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { CheckSession } from '../types';
 import { useElectronAPI } from './useElectronAPI';
+import { categorizeResults } from '../utils/resultUtils';
 
 interface SessionManagerState {
   sessions: CheckSession[];
@@ -40,7 +41,10 @@ export const useSessionManager = () => {
     setState((prev) => ({
       ...prev,
       currentSession: session,
-      canResume: session.status === 'running' || session.status === 'cancelled',
+      canResume: 
+        session.status === 'pending' ||
+        session.status === 'running' || 
+        session.status === 'cancelled',
       canPause: session.status === 'running',
     }));
   }, []);
@@ -52,8 +56,19 @@ export const useSessionManager = () => {
 
     try {
       await electronAPI.cancelCheck();
+      
+      // Update session status and timestamps
+      const updates = {
+        status: 'cancelled' as const,
+        pausedAt: new Date(),
+      };
+      
+      const updatedSession = { ...state.currentSession, ...updates };
+      await electronAPI.saveSession(updatedSession);
+      
       setState((prev) => ({
         ...prev,
+        currentSession: updatedSession,
         canPause: false,
         canResume: true,
       }));
@@ -68,22 +83,44 @@ export const useSessionManager = () => {
     }
 
     try {
-      // Get remaining numbers to check
-      const remainingNumbers = state.currentSession.results
-        .filter((result) => !result.data)
-        .map((result) => ({
+      let numbersToCheck: { original: string; cleaned: string; isValid: boolean }[] = [];
+
+      // For pending sessions that haven't started, use originalNumbers
+      if (state.currentSession.status === 'pending' && state.currentSession.originalNumbers) {
+        numbersToCheck = state.currentSession.originalNumbers.map((num) => ({
+          original: num.original,
+          cleaned: num.cleaned,
+          isValid: num.isValid,
+        }));
+      } else {
+        // For sessions that were started but paused, use categorization to get only pending numbers
+        const categorization = categorizeResults(state.currentSession.results);
+        numbersToCheck = categorization.pendingResults.map((result) => ({
           original: result.number,
           cleaned: result.number,
           isValid: true,
         }));
+      }
 
-      if (remainingNumbers.length > 0) {
+      if (numbersToCheck.length > 0) {
+        // Update session status and timestamps
+        const updates = {
+          status: 'running' as const,
+          lastResumedAt: new Date(),
+        };
+        
+        const updatedSession = { ...state.currentSession, ...updates };
+        await electronAPI.saveSession(updatedSession);
+        
         await electronAPI.startBulkCheck(
-          remainingNumbers,
-          state.currentSession.settings
+          numbersToCheck,
+          state.currentSession.settings,
+          state.currentSession.id
         );
+        
         setState((prev) => ({
           ...prev,
+          currentSession: updatedSession,
           canResume: false,
           canPause: true,
         }));
@@ -165,6 +202,37 @@ export const useSessionManager = () => {
     }
   }, [electronAPI, state.sessions]);
 
+  const toggleStarSession = useCallback(
+    async (session: CheckSession) => {
+      try {
+        const updatedSession = { ...session, isStarred: !session.isStarred };
+        await electronAPI.saveSession(updatedSession);
+        updateSessionById(session.id, { isStarred: !session.isStarred });
+        return true;
+      } catch (error) {
+        console.error('Failed to toggle star status:', error);
+        return false;
+      }
+    },
+    [electronAPI, updateSessionById]
+  );
+
+  const exportSession = useCallback(
+    async (session: CheckSession) => {
+      try {
+        const result = await electronAPI.exportResults(session.id, {
+          format: 'xlsx',
+          includeDetails: true,
+        });
+        return result.success;
+      } catch (error) {
+        console.error('Failed to export session:', error);
+        return false;
+      }
+    },
+    [electronAPI]
+  );
+
   useEffect(() => {
     loadSessions();
   }, [loadSessions]);
@@ -180,5 +248,7 @@ export const useSessionManager = () => {
     updateSessionById,
     deleteSession,
     clearAllSessions,
+    toggleStarSession,
+    exportSession,
   };
 };

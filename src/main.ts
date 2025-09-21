@@ -342,6 +342,7 @@ class WhatsAppCheckerApp {
       };
 
       const onRateLimit = (rateLimitInfo: RateLimitInfo) => {
+        console.log('RateLimitInfo', rateLimitInfo);
         if (this.mainWindow) {
           this.mainWindow.webContents.send('rate-limit-update', rateLimitInfo);
         }
@@ -428,25 +429,43 @@ class WhatsAppCheckerApp {
         throw new Error('Main window not available');
       }
 
+      // Create format-specific filters
+      const getFiltersForFormat = (format: string) => {
+        switch (format) {
+          case 'csv':
+            return [{ name: 'CSV Files', extensions: ['csv'] }];
+          case 'xlsx':
+            return [{ name: 'Excel Files', extensions: ['xlsx'] }];
+          case 'json':
+          default:
+            return [{ name: 'JSON Files', extensions: ['json'] }];
+        }
+      };
+
       // Show save dialog
       const result = await dialog.showSaveDialog(this.mainWindow, {
         defaultPath:
           options.fileName || `whatsapp-results-${sessionId}.${options.format}`,
-        filters: [
-          { name: 'JSON Files', extensions: ['json'] },
-          { name: 'CSV Files', extensions: ['csv'] },
-          { name: 'Excel Files', extensions: ['xlsx'] },
-        ],
+        filters: getFiltersForFormat(options.format),
       });
 
       if (result.canceled || !result.filePath) {
         return { success: false, error: 'Export cancelled' };
       }
 
+      // Ensure the file path has the correct extension
+      let finalFilePath = result.filePath;
+      const expectedExtension = `.${options.format}`;
+      if (
+        !finalFilePath.toLowerCase().endsWith(expectedExtension.toLowerCase())
+      ) {
+        finalFilePath += expectedExtension;
+      }
+
       const filePath = await this.fileService.exportResults(
         session,
         options,
-        result.filePath
+        finalFilePath
       );
 
       return { success: true, filePath };

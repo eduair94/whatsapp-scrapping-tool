@@ -44,7 +44,11 @@ export class SessionOperations {
         completedNumbers: 0,
         successfulChecks: 0,
         failedChecks: 0,
+        notOnWhatsAppChecks: 0,
+        apiErrorChecks: 0,
+        rateLimitedChecks: 0,
         results: [],
+        originalNumbers: validNumbers, // Store original numbers for resuming
         settings,
         status: 'pending',
       };
@@ -78,7 +82,11 @@ export class SessionOperations {
       completedNumbers: 0,
       successfulChecks: 0,
       failedChecks: 0,
+      notOnWhatsAppChecks: 0,
+      apiErrorChecks: 0,
+      rateLimitedChecks: 0,
       results: [],
+      originalNumbers: validNumbers,
       settings,
       status: 'pending',
     };

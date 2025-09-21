@@ -173,7 +173,7 @@ const App: React.FC = () => {
     try {
       // Use existing session if available, otherwise create a new one
       let session = state.currentSession;
-      
+
       if (!session || session.status !== 'pending') {
         // Only create a new session if there's no pending session
         session = await sessionOperations.createSessionForCheck(
@@ -452,6 +452,26 @@ const App: React.FC = () => {
         sessions={sessionManager.sessions}
         onResumeSession={sessionManager.resumeSession}
         onPauseSession={sessionManager.pauseSession}
+        onToggleStar={async (session: CheckSession) => {
+          const success = await sessionManager.toggleStarSession(session);
+          if (success) {
+            toast.success(
+              session.isStarred
+                ? 'Removed from favorites'
+                : 'Added to favorites'
+            );
+          } else {
+            toast.error('Failed to update favorite status');
+          }
+        }}
+        onExportSession={async (session: CheckSession) => {
+          const success = await sessionManager.exportSession(session);
+          if (success) {
+            toast.success('Session exported successfully');
+          } else {
+            toast.error('Failed to export session');
+          }
+        }}
         onDeleteSession={async (sessionId: string) => {
           const success = await sessionManager.deleteSession(sessionId);
           if (success) {
