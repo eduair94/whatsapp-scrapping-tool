@@ -1,0 +1,17 @@
+dist/
+node_modules/
+*.min.js
+*.min.css
+package-lock.json
+.next/
+.nuxt/
+.vuepress/dist
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

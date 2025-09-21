@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https://whatsapp-db.checkleaked.com;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatsApp Number Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              whatsapp: {
+                50: '#f0fdf4',
+                100: '#dcfce7',
+                200: '#bbf7d0',
+                300: '#86efac',
+                400: '#4ade80',
+                500: '#22c55e',
+                600: '#16a34a',
+                700: '#15803d',
+                800: '#166534',
+                900: '#14532d',
+              },
+            },
+            animation: {
+              'spin-slow': 'spin 3s linear infinite',
+              'pulse-slow': 'pulse 3s infinite',
+              'bounce-slow': 'bounce 2s infinite',
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center">
+              <div class="bg-whatsapp-500 p-2 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.594z"
+                  />
+                </svg>
+              </div>
+              <h1 class="ml-3 text-xl font-semibold text-gray-900">
+                WhatsApp Number Checker
+              </h1>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <button
+              id="settingsBtn"
+              class="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+            </button>
+            <button
+              id="historyBtn"
+              class="p-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <!-- Welcome Section -->
+      <div id="welcomeSection" class="px-4 py-6 sm:px-0">
+        <div
+          class="bg-gradient-to-r from-whatsapp-500 to-whatsapp-600 rounded-lg shadow-lg p-8 text-white mb-8"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-3xl font-bold mb-2">
+                Bulk WhatsApp Number Checker
+              </h2>
+              <p class="text-whatsapp-100 text-lg">
+                Upload your phone number list and validate WhatsApp accounts in
+                bulk
+              </p>
+            </div>
+            <div class="hidden md:block">
+              <div class="bg-white/20 p-4 rounded-lg">
+                <svg
+                  class="w-16 h-16 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.867-2.03-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="bg-blue-500 p-3 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">
+                  Supported Formats
+                </p>
+                <p class="text-2xl font-semibold text-gray-900">
+                  CSV, XLSX, TXT
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="bg-green-500 p-3 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Bulk Processing</p>
+                <p class="text-2xl font-semibold text-gray-900">
+                  Fast & Reliable
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="bg-purple-500 p-3 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Export Options</p>
+                <p class="text-2xl font-semibold text-gray-900">
+                  Multiple Formats
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Options -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <!-- File Upload Section -->
+          <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Upload from File
+            </h3>
+            <div
+              class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors duration-200"
+              id="dropZone"
+            >
+              <svg
+                class="mx-auto h-10 w-10 text-gray-400"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <div class="mt-3">
+                <label for="file-upload" class="cursor-pointer">
+                  <span class="mt-2 block text-sm font-medium text-gray-900">
+                    Drop files here or click to upload
+                  </span>
+                  <span class="mt-1 block text-xs text-gray-600">
+                    CSV, XLSX, XLS, TXT (up to 10MB)
+                  </span>
+                </label>
+                <input
+                  id="file-upload"
+                  name="file-upload"
+                  type="file"
+                  class="sr-only"
+                  accept=".csv,.xlsx,.xls,.txt"
+                />
+              </div>
+              <button
+                id="uploadBtn"
+                class="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-whatsapp-600 hover:bg-whatsapp-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500 transition-colors duration-200"
+              >
+                <svg
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  ></path>
+                </svg>
+                Choose File
+              </button>
+            </div>
+          </div>
+
+          <!-- Text Input Section -->
+          <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Paste Numbers Directly
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <label
+                  for="phoneTextArea"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Phone Numbers
+                </label>
+                <textarea
+                  id="phoneTextArea"
+                  name="phoneTextArea"
+                  rows="8"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-whatsapp-500 focus:border-whatsapp-500 text-sm"
+                  placeholder="Paste phone numbers here, one per line:
++1234567890
++441234567890
++34612345678
+5551234567
+..."
+                ></textarea>
+                <p class="mt-1 text-xs text-gray-500">
+                  Enter one phone number per line. Various formats are supported
+                  (with or without country codes).
+                </p>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-500">
+                  <span id="textAreaCount">0</span> numbers detected
+                </div>
+                <div class="flex space-x-2">
+                  <button
+                    id="clearTextBtn"
+                    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500"
+                  >
+                    <svg
+                      class="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      ></path>
+                    </svg>
+                    Clear
+                  </button>
+                  <button
+                    id="processTextBtn"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-whatsapp-600 hover:bg-whatsapp-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg
+                      class="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      ></path>
+                    </svg>
+                    Process Numbers
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Processing Section -->
+      <div id="processingSection" class="hidden px-4 py-6 sm:px-0">
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900">File Processing</h3>
+            <div class="flex items-center text-sm text-gray-500">
+              <div
+                class="animate-spin rounded-full h-4 w-4 border-b-2 border-whatsapp-600 mr-2"
+              ></div>
+              Processing...
+            </div>
+          </div>
+          <div class="bg-gray-200 rounded-full h-2 mb-4">
+            <div
+              id="processingProgress"
+              class="bg-whatsapp-600 h-2 rounded-full transition-all duration-300"
+              style="width: 0%"
+            ></div>
+          </div>
+          <p id="processingStatus" class="text-sm text-gray-600">
+            Reading file...
+          </p>
+        </div>
+      </div>
+
+      <!-- Results Preview Section -->
+      <div id="previewSection" class="hidden px-4 py-6 sm:px-0">
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900">
+                Phone Numbers Preview
+              </h3>
+              <p class="text-sm text-gray-500">
+                Review and configure your numbers before checking
+              </p>
+            </div>
+            <div class="flex space-x-3">
+              <button
+                id="cleanNumbersBtn"
+                class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500"
+              >
+                <svg
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  ></path>
+                </svg>
+                Clean Numbers
+              </button>
+              <button
+                id="startCheckBtn"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-whatsapp-600 hover:bg-whatsapp-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500"
+              >
+                <svg
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+                Start Checking
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gray-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-gray-500">Total Numbers</div>
+              <div id="totalCount" class="text-2xl font-semibold text-gray-900">
+                0
+              </div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-green-600">
+                Valid Numbers
+              </div>
+              <div
+                id="validCount"
+                class="text-2xl font-semibold text-green-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-red-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-red-600">
+                Invalid Numbers
+              </div>
+              <div
+                id="invalidCount"
+                class="text-2xl font-semibold text-red-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-yellow-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-yellow-600">Duplicates</div>
+              <div
+                id="duplicateCount"
+                class="text-2xl font-semibold text-yellow-900"
+              >
+                0
+              </div>
+            </div>
+          </div>
+
+          <!-- Numbers Table -->
+          <div class="bg-gray-50 rounded-lg">
+            <div class="px-4 py-3 border-b border-gray-200">
+              <h4 class="text-sm font-medium text-gray-900">Phone Numbers</h4>
+            </div>
+            <div class="max-h-64 overflow-y-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Original
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Cleaned
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Country
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="numbersTableBody"
+                  class="bg-white divide-y divide-gray-200"
+                >
+                  <!-- Numbers will be inserted here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checking Progress Section -->
+      <div id="checkingSection" class="hidden px-4 py-6 sm:px-0">
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900">
+                Checking WhatsApp Numbers
+              </h3>
+              <p class="text-sm text-gray-500">
+                Please wait while we validate the phone numbers
+              </p>
+            </div>
+            <button
+              id="cancelCheckBtn"
+              class="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+              Cancel
+            </button>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="mb-6">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Progress</span>
+              <span id="progressText">0 / 0</span>
+            </div>
+            <div class="bg-gray-200 rounded-full h-3">
+              <div
+                id="checkProgress"
+                class="bg-whatsapp-600 h-3 rounded-full transition-all duration-300"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Live Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-blue-600">Checked</div>
+              <div
+                id="checkedCount"
+                class="text-2xl font-semibold text-blue-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-green-600">Has WhatsApp</div>
+              <div
+                id="whatsappCount"
+                class="text-2xl font-semibold text-green-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-red-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-red-600">No WhatsApp</div>
+              <div
+                id="noWhatsappCount"
+                class="text-2xl font-semibold text-red-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-yellow-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-yellow-600">
+                Rate Limited
+              </div>
+              <div
+                id="rateLimitedCount"
+                class="text-2xl font-semibold text-yellow-900"
+              >
+                0
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Status -->
+          <div class="bg-gray-50 rounded-lg p-4">
+            <div class="flex items-center">
+              <div
+                class="animate-pulse bg-whatsapp-500 rounded-full h-3 w-3 mr-3"
+              ></div>
+              <span id="currentStatus" class="text-sm text-gray-600"
+                >Initializing...</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="resultsSection" class="hidden px-4 py-6 sm:px-0">
+        <div class="bg-white shadow rounded-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-medium text-gray-900">Check Results</h3>
+              <p class="text-sm text-gray-500">
+                WhatsApp number validation completed
+              </p>
+            </div>
+            <div class="flex space-x-3">
+              <button
+                id="exportBtn"
+                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500"
+              >
+                <svg
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+                Export Results
+              </button>
+              <button
+                id="newCheckBtn"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-whatsapp-600 hover:bg-whatsapp-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500"
+              >
+                <svg
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  ></path>
+                </svg>
+                New Check
+              </button>
+            </div>
+          </div>
+
+          <!-- Results Summary -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-blue-600">
+                Total Processed
+              </div>
+              <div
+                id="finalTotalCount"
+                class="text-2xl font-semibold text-blue-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-green-600">Has WhatsApp</div>
+              <div
+                id="finalWhatsappCount"
+                class="text-2xl font-semibold text-green-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-red-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-red-600">No WhatsApp</div>
+              <div
+                id="finalNoWhatsappCount"
+                class="text-2xl font-semibold text-red-900"
+              >
+                0
+              </div>
+            </div>
+            <div class="bg-purple-50 rounded-lg p-4">
+              <div class="text-sm font-medium text-purple-600">
+                Success Rate
+              </div>
+              <div
+                id="successRate"
+                class="text-2xl font-semibold text-purple-900"
+              >
+                0%
+              </div>
+            </div>
+          </div>
+
+          <!-- Results Table -->
+          <div class="bg-gray-50 rounded-lg">
+            <div
+              class="px-4 py-3 border-b border-gray-200 flex items-center justify-between"
+            >
+              <h4 class="text-sm font-medium text-gray-900">
+                Detailed Results
+              </h4>
+              <div class="flex items-center space-x-2">
+                <select
+                  id="filterResults"
+                  class="text-sm border-gray-300 rounded-md focus:ring-whatsapp-500 focus:border-whatsapp-500"
+                >
+                  <option value="all">All Results</option>
+                  <option value="whatsapp">Has WhatsApp</option>
+                  <option value="no-whatsapp">No WhatsApp</option>
+                  <option value="errors">Errors</option>
+                </select>
+              </div>
+            </div>
+            <div class="max-h-96 overflow-y-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Phone Number
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      WhatsApp Status
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Name
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Business
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Details
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="resultsTableBody"
+                  class="bg-white divide-y divide-gray-200"
+                >
+                  <!-- Results will be inserted here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div
+      id="settingsModal"
+      class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+    >
+      <div
+        class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
+      >
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Settings</h3>
+            <button
+              id="closeSettingsModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <form id="settingsForm" class="space-y-4">
+            <div>
+              <label
+                for="apiKey"
+                class="block text-sm font-medium text-gray-700"
+                >RapidAPI Key</label
+              >
+              <input
+                type="password"
+                id="apiKey"
+                name="apiKey"
+                placeholder="Enter your RapidAPI key"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-whatsapp-500 focus:border-whatsapp-500 sm:text-sm"
+              />
+              <p class="mt-1 text-xs text-gray-500">
+                Get your API key from RapidAPI WhatsApp Data
+              </p>
+            </div>
+            <div>
+              <label
+                for="maxRetries"
+                class="block text-sm font-medium text-gray-700"
+                >Max Retries</label
+              >
+              <input
+                type="number"
+                id="maxRetries"
+                name="maxRetries"
+                min="1"
+                max="10"
+                value="3"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-whatsapp-500 focus:border-whatsapp-500 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label
+                for="timeout"
+                class="block text-sm font-medium text-gray-700"
+                >Timeout (ms)</label
+              >
+              <input
+                type="number"
+                id="timeout"
+                name="timeout"
+                min="5000"
+                max="60000"
+                value="15000"
+                step="1000"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-whatsapp-500 focus:border-whatsapp-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                id="throwOnLimit"
+                name="throwOnLimit"
+                class="h-4 w-4 text-whatsapp-600 focus:ring-whatsapp-500 border-gray-300 rounded"
+              />
+              <label for="throwOnLimit" class="ml-2 block text-sm text-gray-900"
+                >Throw error on rate limit</label
+              >
+            </div>
+            <div class="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                id="cancelSettings"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 text-sm font-medium text-white bg-whatsapp-600 rounded-md hover:bg-whatsapp-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-whatsapp-500"
+              >
+                Save Settings
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Modal -->
+    <div
+      id="historyModal"
+      class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+    >
+      <div
+        class="relative top-10 mx-auto p-5 border w-4/5 max-w-4xl shadow-lg rounded-md bg-white"
+      >
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Check History</h3>
+            <button
+              id="closeHistoryModal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div id="historyContent" class="max-h-96 overflow-y-auto">
+            <!-- History will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div
+      id="loadingOverlay"
+      class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg p-6 flex items-center space-x-4">
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-whatsapp-600"
+        ></div>
+        <span class="text-gray-900 font-medium">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2">
+      <!-- Toasts will be inserted here -->
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

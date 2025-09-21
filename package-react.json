@@ -1,0 +1,75 @@
+{
+  "name": "whatsapp-scrapping-tool",
+  "version": "1.0.0",
+  "description": "WhatsApp Number Checker Tool with React UI",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc --project tsconfig.main.json",
+    "build:renderer": "webpack --config webpack.config.js",
+    "start": "npm run build && electron .",
+    "start:dev": "npm run build && electron . --enable-logging",
+    "clean": "rimraf dist",
+    "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\"",
+    "dev:renderer": "webpack serve --config webpack.config.js",
+    "dev:main": "tsc --project tsconfig.main.json --watch",
+    "dist": "npm run build && electron-builder"
+  },
+  "keywords": ["whatsapp", "checker", "electron", "react", "typescript"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.25",
+    "@types/react-dom": "^18.2.11",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "concurrently": "^8.2.2",
+    "css-loader": "^6.8.1",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4",
+    "eslint": "^8.51.0",
+    "html-webpack-plugin": "^5.5.3",
+    "rimraf": "^5.0.5",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
+    "lucide-react": "^0.287.0",
+    "clsx": "^2.0.0",
+    "tailwindcss": "^3.3.5",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "whatsapp-number-checker": "^1.1.0",
+    "google-libphonenumber": "^3.2.34",
+    "csv-parser": "^3.2.0",
+    "xlsx": "^0.18.5"
+  },
+  "build": {
+    "appId": "com.yourcompany.whatsapp-checker",
+    "productName": "WhatsApp Number Checker",
+    "directories": {
+      "output": "release"
+    },
+    "files": ["dist/**/*", "package.json"],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    }
+  }
+}
